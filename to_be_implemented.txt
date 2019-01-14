@@ -1,0 +1,26 @@
+********	FTDI_Jtag	************
+--------------------------------------------
+
+1. Show line no of svf file in case of failure
+2. Programmer progress bar.. 0 to 100%
+3. read command takes time.. check if low level api can be used to reduce time
+
+
+********	FTDI_I2C	************
+--------------------------------------------
+
+1. ucd read.. reduce freq if error..again go back to default..
+2. create a class to instantiate i2ccontroller... top level variable can be modified..
+3. run i2c probe & find ucd device on the bus.. put comment that probe works only upto 0x78
+
+
+********	FTDI_others	************
+--------------------------------------------
+
+1. windows driver issue.. Every channel shows separate FTDI.. only one channel can be enabled at a time
+	check if possible, create a top level handler to enable/disable FTDI channel
+2. spi flash programming
+3. read/write debugging access through --> i2c/spi.. create an utility for that
+4. Documentation: i)user guide.. installation note, feature etc.
+		  ii)developer's note: file details, top level block diagram.. imp variables etc..no. of retry,  	
+
