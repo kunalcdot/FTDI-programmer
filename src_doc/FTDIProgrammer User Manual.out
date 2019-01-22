@@ -1,0 +1,11 @@
+\BOOKMARK [1][-]{section.0.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.0.2}{Features}{}% 2
+\BOOKMARK [1][-]{section.0.3}{Limitation}{}% 3
+\BOOKMARK [1][-]{section.0.4}{Installation}{}% 4
+\BOOKMARK [1][-]{section.0.5}{Programming Guide}{}% 5
+\BOOKMARK [2][-]{subsection.0.5.1}{Programming file}{section.0.5}% 6
+\BOOKMARK [2][-]{subsection.0.5.2}{SMBUS script generation}{section.0.5}% 7
+\BOOKMARK [2][-]{subsection.0.5.3}{FTDI Channel selection}{section.0.5}% 8
+\BOOKMARK [2][-]{subsection.0.5.4}{Run FTDI-programmer}{section.0.5}% 9
+\BOOKMARK [1][-]{section.0.6}{Future Development}{}% 10
+\BOOKMARK [1][-]{section.0.7}{Troubleshooting}{}% 11

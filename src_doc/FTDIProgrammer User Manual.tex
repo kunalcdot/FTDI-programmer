@@ -1,41 +1,33 @@
-%	bullet and ordered list 
-% \begin{itemize}
-% \item \blindtext
-% \item \blindtext
-% \end{itemize}
-% \begin{enumerate}
-% \item \blindtext
-% \item \blindtext
-% \end{enumerate}
-% \begin{description}
-% \item [Ant] \blindtext
-% \item [Elephant] \blindtext
-% \end{description}
-
 
 \documentclass[a4paper,12pt]{report}% azczxc
 
 % \documentclass{article}% use option titlepage to get the title on a page of its own.
 % \usepackage{blindtext}
-% \usepackage{hyperref}
-\title{FTDI Programmer User Manual}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\title{FTDI Programmer User Manual \\ $\beta$ Version}
 \date{\today}
-\author{Kunal Chakraborty\\ kunalc@cdot.in}
+\author{Kunal Chakraborty \\kunalc@cdot.in}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1em}
 
 \begin{document}
 \maketitle
+\tableofcontents
 
 %% table of content ... list of fig...
 
 
 \section{Introduction}\label{intro}	% to be used with \ref{intro}
 
+
+
 FTDI-programmer is an application written in pure python to access/program on board devices through FTDI devices 
 using JTAG/SPI/I2C/GPIO interfaces. JTAG programming is done through svf file. It can be used in place of any 
-external emulator. The application is built on PyFtdi driver. %--- url(url = https://github.com/eblot/pyftdi) 
+external emulator. The application is built on \href{https://github.com/eblot/pyftdi}{PyFtdi driver}.
 
 
 
@@ -43,8 +35,7 @@ The source code is compatible with both Windows and Linux system. However this m
 user's point of view.
 
 
-This is a Beta %\beta
-version and hence the application has couple of limitations as listed in section \ref{sec:limit} 
+This is a $\beta$-version and hence the application has couple of limitations as listed in section \ref{sec:limit} 
 
 	
 
@@ -91,7 +82,7 @@ version and hence the application has couple of limitations as listed in section
 			application after reading from usb. This is kept as Future Development.
 			\item
 			Only Max-V CPLD programming is supported. If any other device is detected, FTDI-programmer will flag a warning
-			and continue with programming. However the integrity of the programming is not validated.  
+			with device id and exit.  
 		\end{enumerate}
 
 	\item	Others
@@ -109,17 +100,52 @@ version and hence the application has couple of limitations as listed in section
 	libusb to talk to FTDI device. You must have admin privilege to carry out below steps.
 	Step by step installation guide is given below.
 	\begin{description}
-		\item [1. libusb installation]
-		An easy way to install libusb backend on windows is Zadig. Download the latest version of Zadig %url = https://zadig.akeo.ie/
-		Run zadig.exe and you should get a dialog as shown below
+		\item [1. libusb installation:]
+		An easy way to install libusb backend on windows is Zadig. Download the latest version of Zadig from \url{https://zadig.akeo.ie/} %url = https://zadig.akeo.ie/
+		Run zadig.exe and you should get a dialog as shown in Fig\ref{fig:zadig_main}.
 			% figure -----
+		
+			\begin{figure}[h]
+				
+				\centering
+				\includegraphics[scale = 0.7]{zadig_main}
+				\caption{zadig main window}
+				\label{fig:zadig_main}
+			\end{figure}
+		
+		
+		
 		Go to Options -- List All Devices. Then select FTDI-channel0 from drop down option. Next select libusb-win32 as driver.
 			% figure -----
+			\begin{figure}[h]
+				
+				\centering
+				\includegraphics[scale = 0.7]{zadig_libusb}
+				\caption{libusb installation}
+				\label{fig:zadig_libusb}
+			\end{figure}
+			
 		Finally, click install driver.
 		Follow the same step to install driver on FTDI-channel1
 		
-		\item [2. Get FTDI-programmer]
-		Download a fresh copy of FTDI-programmer from 'https://github.com/kunalcdot/FTDI-programmer'. The application is 
+		\item [2. Verify libusb driver:]
+		Go to windows device manager. You should be able to see libusb device. Under libusb, FTDI devices
+		(1 for each channel) should be shown 
+		for which libusb driver is installed(refer to figure \ref{fig:device_manager}. Disable all 
+		channels except one channel(the one you want to use for programming). 
+		
+			\begin{figure}[h]
+				
+				\centering
+				\includegraphics[scale = 0.7]{ft_channel_enable}
+				\caption{Enabling FTDI channel from device manager}
+				\label{fig:device_manager}
+			\end{figure}
+			
+		
+		
+		\item [3. Get FTDI-programmer:]
+		Download a fresh copy of FTDI-programmer from \url{https://github.com/kunalcdot/FTDI-programmer}. The application is 
 		under /bin folder. Run FTDI-programmer.exe to start the application.
 		
 	\end{description}
@@ -128,25 +154,81 @@ version and hence the application has couple of limitations as listed in section
 
 
 \section{Programming Guide}\label{sec:prog_guide}
-	\subsection{JTAG Programming}
-	pre requisite -- svf file
-	zadig channel selection
-	% figure
+	\subsection{Programming file}
+	\begin{itemize}
+		\item
+		For JTAG programming standard svf file needs to be used.
+		
+		\item
+		For UCD programming, SMBUS flash script in csv format needs to be generated. The script generation procedure is
+		discussed in detail in section \ref{sec:script}
+		
+		
+	\end{itemize}	
 	
 	
-	\subsection{UCD Programming}
-		\subsubsection{SMBUS Flash script generation}
-			connect ti fusion tool.. 
-			% figure.. fusion
-			% figure.. sample csv file
-			
-		\subsubsection{USB Channel Selection}
-			zadig channel selection
-			% figure
+	\subsection{SMBUS script generation}\label{sec:script}
+	UCD devices run on SMBUS protocol. FTDI-programmer sends SMBUS commands towards UCD device for programming. TI Fusion
+	tool can be used to generate SMBUS flash script. Note that flash script can only be generated in online mode. Also note
+	that the UCD device used to generate flash script should have the same firmware as target device. This will also be verified by
+	FTDI-programmer.
+	
+	Open Fusion GUI tool in online mode. Then go to File -- Export option. Under export option select \textbf{'Data Flash Script'}.
+	Select below mentioned options in the script settings:
+	\begin{itemize}
+		\item
+		Script Style: SMBUS
+		\item
+		Add PEC byte
+		\item
+		File format: CSV
+		\item
+		Hex format: 0xAABB
+		\item
+		Comment Style: 'Comment'
+		\item
+		Multiple byte: Compact
+		\item
+		Read verification: As per your choice
+	\end{itemize}	
+
+	A screenshot of script settings is shown in figure \ref{fig:smbus_script}. Export the file with .csv extension.
+	
+	
+	
+		\begin{figure}[p]
+				
+				\centering
+				\includegraphics[scale = 0.7]{smbus_flash_script_generation}
+				\caption{SMBUS Flash Script for UCD device}
+				\label{fig:smbus_script}
+			\end{figure}
+	
+	
+	
+	
+	
+	\subsection{FTDI Channel selection}
+	Due to limitation from MS Windows, PC running FTDI-programmer must have only one channel active. Libusb driver 
+	can be installed on multiple channels. However ensure that all the channels except the desired channel are disabled.
+	This can be done in windows device manager utility. Refer to Figure \ref{fig:device_manager}. The user must have
+	administrator privilege. 
+	
+	
+	\subsection{Run FTDI-programmer}
+	Download a fresh copy of FTDI-programmer from \url{https://github.com/kunalcdot/FTDI-programmer}. The application is 
+	under /bin folder. Run FTDI-programmer.exe to start the application. Ensure all supporting files(dll and windows api)
+	are present in same directory.
+	
+	There are 2 programming modes: JTAG(standard svf programming) and I2C(customized UCD device programming). Each mode 
+	supports default as well as advance settings. Most of the time default setting is the desired one. In advance mode, you
+	can change programming frequency and frequency optimization. 
+	
+	For JTAG default frequency is 3MHz. FTDI-programmer ignores svf file frequency command. In case of I2C default frequency
+	is 5KHz. As FTDI device does not support clock stretching, default frequency is kept low to communicate with UCD device.
+	
+	Next browse the file to be progrmmed and programming will be started.  	
 		
-		\subsubsection{Run FTDI-programmer}
-		
-			% fig...
 		
 		
 \section{Future Development}
@@ -166,8 +248,16 @@ version and hence the application has couple of limitations as listed in section
 \end{enumerate}
 
 \section{Troubleshooting}
-Ensure only one FTDI device is connected and single ftdi channel is enabled. Refer to section ~\ref{install} for more details.
-% abc \ref{install}
+Ensure only one FTDI device is connected and single ftdi channel is enabled. Refer to section \ref{sec:install} for more details.
+
+Error: No ftdi device	-- Ensure pc is connected to FTDI device and the device is out of reset
+
+% Error: No backend available : ensure  'libusb0.dll' and 'libusb0_x86.dll' files are present in /bin folder. 
+
+Error: Unknown device detected(In jtag mode): Ensure board is powered up and there is only one device(MAX-V) in JTAG chain.
+
+Error: File not found: Ensure there is no white space in your file path.
+
 
 
 \end{document}
